@@ -12,6 +12,12 @@ export default class News extends Component {
         }
     }
 
+     changeType = async(e) =>{
+        let url = `https://newsapi.org/v2/top-headlines?country=us&category=${e.target.value}&apiKey=98c684deb8ef48a8bd16a6ba39f4ff06`;
+        let data = await fetch(url)
+        let parsedData = await data.json();
+        this.setState({articles:parsedData.articles})
+    }
    async  componentDidMount(){
         let url = "https://newsapi.org/v2/top-headlines?country=us&category=politics&apiKey=98c684deb8ef48a8bd16a6ba39f4ff06";
         let data = await fetch(url);
@@ -20,10 +26,17 @@ export default class News extends Component {
     }
     
     render() {
+        
         return (
             <>
             <div className="container mt-3 pt-3">
                 <h1>Top News</h1>
+                <h4>Filter News</h4>
+                <select className='form-control' onChange={this.changeType}>
+                    <option value="politics">Politics</option>
+                    <option value="sports">Sports</option>
+                    <option value="business">Business</option>
+                </select>
                 <div className="row">
                     {
                         this.state.articles.map((ele,idx)=>{
