@@ -41,7 +41,7 @@ export default class News extends Component {
                     {
                         this.state.articles.map((ele,idx)=>{
                             return  <div className="col-md-6 col-sm-12 col-12 col-lg-4  mt-5 pt-2" key={idx}>
-                                        <NewsItem title={ele.title?ele.title.slice(0,50):""} description={ele.description?ele.description.slice(0,80):""} imageUrl={ele.urlToImage} readMore={ele.url} />
+                                        <NewsItem title={ele.title?ele.title.slice(0,50):""} description={ele.description?ele.description.slice(0,80):""} imageUrl={ele.urlToImage?ele.urlToImage:"https://img.freepik.com/free-icon/user_318-159711.jpg?w=2000"} readMore={ele.url} />
                                     </div>
                         })
                     }
