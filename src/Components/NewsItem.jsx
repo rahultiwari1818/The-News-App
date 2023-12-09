@@ -7,7 +7,7 @@ export default function NewsItem({title,description,imageUrl,readMore}) {
   return (
     <>
         <div className="card shadow"  >
-            <img src={imageUrl} className="card-img-top" alt="..."/>
+            <img src={imageUrl} className="card-img-top" alt="..." style={{height:"30vh",width:"25vw"}}/>
             <div className="card-body">
                 <h5 className="card-title">{title}...</h5>
                 <p className="card-text">{description}...</p>
