@@ -13,41 +13,60 @@ export default function News() {
   // Use a ref to track whether it's the initial render
   const initialRender = useRef(true);
 
-  const callApi = async () => {
+  const callApi = async (currentPage) => {
     try {
-        let url = `https://newsapi.org/v2/top-headlines?country=in&category=${type}&page=${page}&pageSize=5&apiKey=98c684deb8ef48a8bd16a6ba39f4ff06`;
+      console.log("page",page,type)
+        let url = `https://newsapi.org/v2/top-headlines?country=in&category=${type}&page=${currentPage}&pageSize=5&apiKey=98c684deb8ef48a8bd16a6ba39f4ff06`;
+        console.log("url",url)
         let data = await fetch(url);
         let parsedData = await data.json();
         setArticles((oldArticles) => [...oldArticles, ...parsedData.articles]);
         setTotalArticles(parsedData.totalResults);
-        // Increment the page after updating the state
-        setPage((prevPage) => prevPage + 1);
-        setIsLoading(false);
+        let newPage = page + 1;
+        setPage(newPage);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+      finally{
+        setIsLoading(false);
+      }
   };
 
-  const handleScroll = () => {
+  
+
+  const handleScroll = debounce(() => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = document.documentElement.clientHeight;
-
-    if (scrollTop + clientHeight >= scrollHeight - 100 && hasMore) {
+    if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading && hasMore) {
       setIsLoading(true);
-      callApi();
-      console.log("api called", hasMore);
+      callApi(page);
     }
-  };
+  },800);
+
+  function debounce(fn, delay = 250) {
+    let timerId;
+    return function(...args) {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        fn.apply(this, args);
+      }, delay);
+    };
+  }
 
   useEffect(() => {
     // If it's not the initial render, call the API
     if (!initialRender.current) {
-      callApi();
+      setArticles([])
+      setHasMore(true);
+      callApi(1);
+      setPage(1);
+
     } else {
       // On the initial render, set the ref to false
       initialRender.current = false;
     }
+    
   }, [type]);
 
   useEffect(() => {
@@ -56,7 +75,7 @@ export default function News() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isLoading,hasMore]);
 
   useEffect(() => {
     if (articles.length >= totalArticles && articles.length !== 0) {
@@ -71,7 +90,7 @@ export default function News() {
       <div className="container mt-3 pt-3 mb-3">
         <h4>Filter News</h4>
         <select className='form-control' onChange={(e) => setType(e.target.value)}>
-          <option value=""></option>
+          <option value="">--- Select an Category ---</option>
           <option value="politics">Politics</option>
           <option value="sports">Sports</option>
           <option value="business">Business</option>
