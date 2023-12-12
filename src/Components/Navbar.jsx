@@ -1,7 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export default function Navbar() {
     const [search,setSearch] =useState("");
+
+
+    useEffect(()=>{
+        
+    },[search])
   return (        <>
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
@@ -15,7 +20,6 @@ export default function Navbar() {
             </ul>
             <form className="d-flex" role="search">
                 <input className="form-control me-2" type="search" value={search} onChange={(e)=>{setSearch(e.target.value)}}  placeholder="Search" aria-label="Search"/>
-                <button className="btn btn-outline-success" type="submit">Search</button>
             </form>
             </div>
         </div>
