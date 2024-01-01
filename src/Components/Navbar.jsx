@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 export default function Navbar() {
-    const [search,setSearch] =useState("");
-
-
-    useEffect(()=>{
-        
-    },[search])
+    
   return (        <>
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
@@ -18,9 +13,7 @@ export default function Navbar() {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 
             </ul>
-            <form className="d-flex" role="search">
-                <input className="form-control me-2" type="search" value={search} onChange={(e)=>{setSearch(e.target.value)}}  placeholder="Search" aria-label="Search"/>
-            </form>
+
             </div>
         </div>
     </nav>

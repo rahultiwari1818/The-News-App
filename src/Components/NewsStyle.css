@@ -1,0 +1,12 @@
+img{
+    height: 30vh ;
+    width: 25vw ;
+}
+
+@media screen and (max-width: 500px) {
+    img{
+        height: 30vh ;
+        width: 80vw ;
+    }
+  
+  }

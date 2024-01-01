@@ -18,10 +18,10 @@ export default function News() {
 
 
 
-  const callApi = async (currentPage) => {
+  const callApi = async () => {
     try {
       console.log("page", page, type)
-      let url = `https://newsapi.org/v2/top-headlines?country=in&category=${type}&q=${search}&page=${currentPage}&pageSize=6&apiKey=98c684deb8ef48a8bd16a6ba39f4ff06`;
+      let url = `https://newsapi.org/v2/top-headlines?country=in&category=${type}&q=${search}&page=${page}&pageSize=6&apiKey=98c684deb8ef48a8bd16a6ba39f4ff06`;
       console.log("url", url)
       let data = await fetch(url);
       let parsedData = await data.json();
@@ -32,14 +32,14 @@ export default function News() {
 	  else{
 		setArticles(() => []);
 	  }
-      setTotalArticles(parsedData.totalResults);
-      let newPage = page + 1;
-      setPage(newPage);
+      setTotalArticles(()=>parsedData.totalResults);
+      
+      setPage((old)=>old+1);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
     finally {
-      setIsLoading(false);
+      setIsLoading((old)=>!old);
     }
   };
 
@@ -51,24 +51,24 @@ export default function News() {
     const clientHeight = document.documentElement.clientHeight;
     if (scrollTop + clientHeight >= scrollHeight - 300 && !isLoading && hasMore) {
       setIsLoading(true);
-      callApi(page);
+      callApi();
     }
   }, 800);
 
   const debouncedSearch = () =>{
-  	callApi(1);
+  	callApi();
   }
 
 
   useEffect(() => {
     // If it's not the initial render, call the API
     if (!initialRender.current) {
-      setArticles([])
-      setHasMore(true);
-      setPage(1);
+      setArticles(()=>[])
+      setHasMore(()=>true);
+      setPage(()=>1);
 	  debounce(() => {
-		debouncedSearch(1)
-		console.log("searched")
+		debouncedSearch()
+		// console.log("searched")
 	},800);
     } else {
       // On the initial render, set the ref to false
@@ -87,7 +87,7 @@ export default function News() {
 
   useEffect(() => {
     if (articles.length >= totalArticles && articles.length !== 0) {
-      setHasMore(false);
+      setHasMore((old)=>!old);
       console.log("hasMore", hasMore);
     }
     console.log("useeffct called ", articles.length, totalArticles);
@@ -95,7 +95,7 @@ export default function News() {
 
 
   useEffect(debounce(() => {
-		callApi(page)
+		callApi()
 		console.log("searched")
 	},800), [search])
 
@@ -103,7 +103,7 @@ export default function News() {
     <>
       <div className="container mt-3 pt-3 mb-3">
         <h4>Filter News</h4>
-        <select className='form-control' onChange={(e) => setType(e.target.value)}>
+        <select className='form-control' onChange={(e) => setType(()=>e.target.value)}>
           <option value="">--- Select a Category ---</option>
           <option value="business">Business</option>
           <option value="entertainment">Entertainment</option>
@@ -117,7 +117,7 @@ export default function News() {
           <input className="form-control me-2" type="search" value={search} onChange={(e) => { setSearch(e.target.value) }} placeholder="Search" aria-label="Search" />
         </form>
         <h1 className='mt-2'>Top News</h1>
-        <div className="row">
+        <div className="row mb-5">
           {
             articles?.map((ele, idx) => {
               return <div className="col-md-6 col-sm-12 col-12 col-lg-4  mt-5 pt-2" key={idx}>
@@ -141,6 +141,10 @@ export default function News() {
               barColor=""
               ariaLabel='circles-with-bar-loading'
             />
+          }
+          {
+            !hasMore &&
+            <h3>All Results are Loaded</h3>
           }
         </div>
       </div>
